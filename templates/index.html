@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrimeRate AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e6e9f0 100%);
+        }
+        .prediction-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .prediction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .status-low { 
+            color: #10B981;
+            background-color: rgba(16, 185, 129, 0.1);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .status-medium { 
+            color: #3B82F6;
+            background-color: rgba(59, 130, 246, 0.1);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .status-high { 
+            color: #F59E0B;
+            background-color: rgba(245, 158, 11, 0.1);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .status-very-high { 
+            color: #EF4444;
+            background-color: rgba(239, 68, 68, 0.1);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .glow {
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+            }
+        }
+        .select-style {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            appearance: none;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .data-source-banner {
+            background-color: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Enhanced Navigation -->
+    <nav class="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="{{ url_for('index') }}" class="text-xl font-bold flex items-center hover:text-blue-200 transition duration-200">
+                <i class="bi bi-shield-lock mr-2"></i> 
+                <span>CrimeRate<span class="text-blue-200">AI</span></span>
+            </a>
+            <div class="hidden md:flex space-x-6">
+                 
+                
+                <a href="{{ url_for('about') }}" class="nav-link py-1 flex items-center font-medium">
+                    <i class="bi bi-info-circle mr-2"></i> About
+                </a>
+                <a href="{{ url_for('index') }}" class="nav-link py-1 flex items-center">
+                    <i class="bi bi-house-door mr-2"></i> Predictions
+                </a>
+                
+            </div>
+            <button class="md:hidden text-2xl">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+
+        <div class="data-source-banner p-4 mb-8 rounded-r-lg flex items-start">
+            <i class="bi bi-database text-blue-600 text-xl mr-3 mt-1"></i>
+            <div>
+                <h3 class="font-bold text-blue-800 mb-1">Official Data Source</h3>
+                <p class="text-sm text-gray-700">
+                    Crime statistics powered by <a href="https://www.ncrb.gov.in" target="_blank" class="text-blue-600 hover:underline font-medium">National Crime Records Bureau (NCRB)</a>.
+                    <span class="block mt-1 text-xs text-gray-500">
+                        <i class="bi bi-info-circle"></i> Data is processed through our predictive models - see <a href="about.html#methodology" class="text-blue-500 hover:underline">methodology</a> for details.
+                    </span>
+                </p>
+            </div>
+        </div>
+        <!-- Live Stats Banner -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-8 flex flex-wrap justify-between items-center">
+            <div class="flex items-center mb-2 sm:mb-0">
+                <i class="bi bi-graph-up-arrow text-blue-600 mr-2"></i>
+                <span class="font-medium">Live Crime Stats:</span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full sm:w-auto">
+                <div class="text-center">
+                    <div class="text-sm text-gray-500">Total Cities</div>
+                    <div class="text-xl font-bold" id="liveCities">30</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-gray-500">Crime Types</div>
+                    <div class="text-xl font-bold" id="liveCrimeTypes">15</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-gray-500">Predictions Today</div>
+                    <div class="text-xl font-bold" id="livePredictions">1,248</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-gray-500">Last Updated</div>
+                    <div class="text-xl font-bold" id="liveUpdated">Now</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Enhanced Prediction Form -->
+            <div class="prediction-card p-6 glow">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                    <i class="bi bi-magic mr-2 text-blue-600"></i> Crime Rate Prediction
+                </h2>
+                <form id="predictionForm" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2 font-medium">City</label>
+                        <select name="city" class="w-full p-3 border rounded-lg select-style focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                            <option value="">Select City</option>
+                            {% for code, name in cities.items() %}
+                                <option value="{{ code }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2 font-medium">Crime Type</label>
+                        <select name="crime" class="w-full p-3 border rounded-lg select-style focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                            <option value="">Select type</option>
+                            {% for code, name in crimes.items() %}
+                                <option value="{{ code }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2 font-medium">Year</label>
+                        <input type="number" name="year" min="2011" max="2030" 
+                               class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               required
+                               value="2023">
+                        <p class="text-xs text-gray-500 mt-1">For future years (2024+), results will be marked as projections</p>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-blue-600 transition duration-200 flex items-center justify-center">
+                        <i class="bi bi-lightning-charge-fill mr-2"></i> Predict Crime Rate
+                    </button>
+                </form>
+            </div>
+
+            <!-- Enhanced Results Section -->
+            <div class="prediction-card p-6">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                    <i class="bi bi-clipboard-data mr-2 text-blue-600"></i> Prediction Results
+                </h2>
+                <div id="predictionResults" class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <div id="emptyState" class="text-center py-8">
+                        <i class="bi bi-search text-4xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-500">Submit the form to see prediction results</p>
+                        <p class="text-xs text-gray-400 mt-2">Predictions powered by AI algorithms</p>
+                    </div>
+                    <div id="resultsContent" class="hidden space-y-4 animate-fade-in">
+                        <h3 class="text-lg font-semibold flex items-center">
+                            <span>Predicted Crime Rate</span>
+                            <span id="predictionTypeBadge" class="ml-2 text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800 hidden">Projection</span>
+                        </h3>
+                        <div class="text-5xl font-bold flex items-end" id="predictionValue">
+                            <span>N/A</span>
+                            <span class="text-xl ml-2 text-gray-500">per 100k</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="font-medium text-gray-600">City:</p>
+                                <p id="resultCity" class="font-semibold">-</p>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-600">Crime Type:</p>
+                                <p id="resultCrimeType" class="font-semibold">-</p>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-600">Year:</p>
+                                <p id="resultYear" class="font-semibold">-</p>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-600">Population:</p>
+                                <p id="resultPopulation" class="font-semibold">-</p>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-600">Estimated Cases:</p>
+                                <p id="resultCases" class="font-semibold">-</p>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-600">Status:</p>
+                                <p id="resultStatus" class="font-bold">-</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <h4 class="font-semibold mb-3 text-gray-700 flex items-center">
+                                <i class="bi bi-lightbulb mr-2"></i> Recommendations:
+                            </h4>
+                            <ul id="recommendations" class="space-y-2">
+                                <!-- Filled by JavaScript -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Comparison Section -->
+        <div class="mt-12 prediction-card p-6">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                <i class="bi bi-bar-chart-line mr-2 text-blue-600"></i> Compare Crime Rates
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-gray-700 mb-2 font-medium">City 1</label>
+                    <select id="city1" class="w-full p-3 border rounded-lg select-style focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Select City</option>
+                        {% for code, name in cities.items() %}
+                            <option value="{{ code }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2 font-medium">City 2</label>
+                    <select id="city2" class="w-full p-3 border rounded-lg select-style focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Select City</option>
+                        {% for code, name in cities.items() %}
+                            <option value="{{ code }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-gray-700 mb-2 font-medium">Crime Type</label>
+                    <select id="compareCrimeType" class="w-full p-3 border rounded-lg select-style focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        {% for code, name in crimes.items() %}
+                            <option value="{{ code }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2 font-medium">Year</label>
+                    <input type="number" id="compareYear" min="2011" max="2030" 
+                           class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                           value="2023">
+                </div>
+            </div>
+            <div class="flex items-end">
+                <button onclick="compareCrimeRates()" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-blue-600 transition duration-200 flex items-center justify-center">
+                    <i class="bi bi-arrow-left-right mr-2"></i> Compare Cities
+                </button>
+            </div>
+            
+            <!-- Comparison Results -->
+            <div id="comparisonResults" class="hidden mt-8 animate-fade-in">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-gray-800">Comparison Analysis</h3>
+                    <span id="comparisonYearBadge" class="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-800"></span>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+                
+                <div class="mt-8 grid md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-semibold mb-3 flex items-center" id="city1Name">
+                            <i class="bi bi-geo-alt mr-2 text-blue-600"></i> City 1
+                        </h3>
+                        <div class="text-4xl font-bold text-blue-600 mb-3" id="city1Value">0%</div>
+                        <div class="space-y-2 text-gray-700">
+                            <div class="flex justify-between">
+                                <span class="font-medium">Safety Index:</span>
+                                <span id="city1Safety" class="font-semibold">N/A</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="font-medium">Population:</span>
+                                <span id="city1Population" class="font-semibold">N/A</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-semibold mb-3 flex items-center" id="city2Name">
+                            <i class="bi bi-geo-alt mr-2 text-blue-600"></i> City 2
+                        </h3>
+                        <div class="text-4xl font-bold text-blue-600 mb-3" id="city2Value">0%</div>
+                        <div class="space-y-2 text-gray-700">
+                            <div class="flex justify-between">
+                                <span class="font-medium">Safety Index:</span>
+                                <span id="city2Safety" class="font-semibold">N/A</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="font-medium">Population:</span>
+                                <span id="city2Population" class="font-semibold">N/A</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center">
+                        <i class="bi bi-journal-text mr-2 text-blue-600"></i> Comparison Summary
+                    </h3>
+                    <p id="comparisonSummary" class="text-gray-700">
+                        Select two cities and click compare to see the analysis.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Enhanced Footer -->
+    <footer class="bg-gradient-to-r from-blue-800 to-blue-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4 flex items-center">
+                        <i class="bi bi-shield-lock mr-2"></i> CrimeRateAI
+                    </h3>
+                    <p class="text-sm text-blue-200">Advanced crime prediction and analysis platform powered by machine learning.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Home</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">About</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contact</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center"><i class="bi bi-envelope mr-2"></i> contact@crimerateai.com</li>
+                        <li class="flex items-center"><i class="bi bi-telephone mr-2"></i> +91 8850712345</li>
+                        <li class="flex items-center"><i class="bi bi-geo-alt mr-2"></i> Mumbai, India</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-blue-700 mt-8 pt-6 text-sm text-center text-blue-300">
+                <p>© 2023 CrimeRateAI. All rights reserved. Predictions are based on statistical models and should be used for informational purposes only.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let comparisonChart = null;
+        
+        // Simulate live data updates
+        function updateLiveStats() {
+            // Randomize the live stats slightly for realism
+            document.getElementById('livePredictions').textContent = 
+                (1248 + Math.floor(Math.random() * 20)).toLocaleString();
+            
+            // Update the "last updated" time
+            const now = new Date();
+            document.getElementById('liveUpdated').textContent = 
+                now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+        
+        // Initialize live stats and update every 30 seconds
+        updateLiveStats();
+        setInterval(updateLiveStats, 30000);
+        
+        // Handle prediction form submission
+        document.getElementById("predictionForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            
+            const formData = {
+                city: document.querySelector("#predictionForm select[name='city']").value,
+                crime: document.querySelector("#predictionForm select[name='crime']").value,
+                year: document.querySelector("#predictionForm input[name='year']").value
+            };
+
+            // Show loading state
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin mr-2"></i> Predicting...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showPredictionResults(data);
+                } else {
+                    alert("Error: " + (data.error || "Unknown error occurred"));
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while making the prediction");
+            } finally {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        function showPredictionResults(data) {
+            document.getElementById("emptyState").classList.add("hidden");
+            document.getElementById("resultsContent").classList.remove("hidden");
+            
+            // Check if this is a future prediction
+            const currentYear = new Date().getFullYear();
+            const isFuturePrediction = parseInt(data.year) > currentYear;
+            
+            // Update future prediction indicators
+            if (isFuturePrediction) {
+                document.getElementById("predictionTypeBadge").classList.remove("hidden");
+            } else {
+                document.getElementById("predictionTypeBadge").classList.add("hidden");
+            }
+            
+            // Update values
+            document.getElementById("predictionValue").innerHTML = 
+                `<span>${data.crime_rate}</span><span class="text-xl ml-2 text-gray-500">per 100k</span>`;
+            document.getElementById("resultCity").textContent = data.city_name;
+            document.getElementById("resultCrimeType").textContent = data.crime_type;
+            document.getElementById("resultYear").textContent = data.year;
+            document.getElementById("resultPopulation").textContent = data.population + " lakhs";
+            document.getElementById("resultCases").textContent = data.cases;
+            
+            // Update status with appropriate color
+            const statusElement = document.getElementById("resultStatus");
+            statusElement.textContent = data.crime_status;
+            statusElement.className = "font-bold "; // Reset classes
+            
+            if (data.crime_status.includes("Very Low")) {
+                statusElement.classList.add("status-low");
+            } else if (data.crime_status.includes("Low")) {
+                statusElement.classList.add("status-medium");
+            } else if (data.crime_status.includes("High")) {
+                statusElement.classList.add("status-high");
+            } else {
+                statusElement.classList.add("status-very-high");
+            }
+            
+            // Update recommendations
+            const recommendations = document.getElementById("recommendations");
+            recommendations.innerHTML = "";
+            
+            let recommendationItems = [];
+            if (data.crime_status.includes("Very High")) {
+                recommendationItems = [
+                    {icon: "bi-megaphone", text: "Immediate police intervention required"},
+                    {icon: "bi-camera-video", text: "Increase surveillance and patrols"},
+                    {icon: "bi-people", text: "Implement community awareness programs"},
+                    {icon: "bi-shield-check", text: "Coordinate with local law enforcement"}
+                ];
+            } else if (data.crime_status.includes("High")) {
+                recommendationItems = [
+                    {icon: "bi-shield", text: "Increase police presence in the area"},
+                    {icon: "bi-eye", text: "Implement community watch programs"},
+                    {icon: "bi-lightbulb", text: "Improve lighting in vulnerable locations"},
+                    {icon: "bi-book", text: "Conduct public safety workshops"}
+                ];
+            } else {
+                recommendationItems = [
+                    {icon: "bi-check-circle", text: "Maintain current safety measures"},
+                    {icon: "bi-chat-dots", text: "Continue community engagement"},
+                    {icon: "bi-graph-up", text: "Monitor crime trends regularly"},
+                    {icon: "bi-house", text: "Encourage neighborhood watch"}
+                ];
+            }
+            
+            recommendationItems.forEach(item => {
+                const li = document.createElement("li");
+                li.className = "flex items-start p-2 rounded hover:bg-gray-100";
+                li.innerHTML = `
+                    <i class="bi ${item.icon} mr-2 mt-1 text-blue-500"></i>
+                    <span>${item.text}</span>
+                `;
+                recommendations.appendChild(li);
+            });
+        }
+
+        async function compareCrimeRates() {
+            const city1 = document.getElementById("city1").value;
+            const city2 = document.getElementById("city2").value;
+            const crimeType = document.getElementById("compareCrimeType").value;
+            const year = document.getElementById("compareYear").value;
+            
+            if (!city1 || !city2) {
+                alert("Please select both cities to compare");
+                return;
+            }
+            
+            if (city1 === city2) {
+                alert("Please select two different cities for comparison");
+                return;
+            }
+            
+            const compareBtn = document.querySelector("button[onclick='compareCrimeRates()']");
+            if (compareBtn) {
+                compareBtn.disabled = true;
+                compareBtn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin mr-2"></i> Comparing...';
+            }
+            
+            try {
+                const response = await fetch('/compare', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        city1: city1,
+                        city2: city2,
+                        crime: crimeType,
+                        year: year
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showComparisonResults(data);
+                } else {
+                    alert("Error: " + (data.error || "Unknown error occurred"));
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while comparing cities");
+            } finally {
+                if (compareBtn) {
+                    compareBtn.disabled = false;
+                    compareBtn.innerHTML = '<i class="bi bi-arrow-left-right mr-2"></i> Compare Cities';
+                }
+            }
+        }
+
+        function showComparisonResults(data) {
+            // Check if this is a future comparison
+            const currentYear = new Date().getFullYear();
+            const isFutureComparison = parseInt(data.year) > currentYear;
+            
+            // Update year badge
+            const yearBadge = document.getElementById("comparisonYearBadge");
+            yearBadge.textContent = data.year;
+            if (isFutureComparison) {
+                yearBadge.classList.add("bg-yellow-100", "text-yellow-800");
+                yearBadge.classList.remove("bg-blue-100", "text-blue-800");
+            } else {
+                yearBadge.classList.add("bg-blue-100", "text-blue-800");
+                yearBadge.classList.remove("bg-yellow-100", "text-yellow-800");
+            }
+            
+            // Update city information
+            document.getElementById("city1Name").innerHTML = `<i class="bi bi-geo-alt mr-2 text-blue-600"></i> ${data.city1.name}`;
+            document.getElementById("city2Name").innerHTML = `<i class="bi bi-geo-alt mr-2 text-blue-600"></i> ${data.city2.name}`;
+            document.getElementById("city1Value").textContent = data.city1.crime_rate + "%";
+            document.getElementById("city2Value").textContent = data.city2.crime_rate + "%";
+            document.getElementById("city1Safety").textContent = data.city1.safety_index;
+            document.getElementById("city2Safety").textContent = data.city2.safety_index;
+            document.getElementById("city1Population").textContent = data.city1.population + " lakhs";
+            document.getElementById("city2Population").textContent = data.city2.population + " lakhs";
+            
+            // Generate comparison summary
+            let summary = "";
+            if (data.city1.crime_rate > data.city2.crime_rate) {
+                summary = `${data.city1.name} has a higher crime rate (${data.city1.crime_rate}%) than ${data.city2.name} (${data.city2.crime_rate}%) for ${data.crime_type} in ${data.year}.`;
+            } else if (data.city1.crime_rate < data.city2.crime_rate) {
+                summary = `${data.city2.name} has a higher crime rate (${data.city2.crime_rate}%) than ${data.city1.name} (${data.city1.crime_rate}%) for ${data.crime_type} in ${data.year}.`;
+            } else {
+                summary = `Both ${data.city1.name} and ${data.city2.name} have similar crime rates (${data.city1.crime_rate}%) for ${data.crime_type} in ${data.year}.`;
+            }
+            
+            document.getElementById("comparisonSummary").textContent = summary;
+            document.getElementById("comparisonResults").classList.remove("hidden");
+            
+            // Update chart
+            updateComparisonChart(
+                data.city1.name, 
+                data.city2.name, 
+                data.city1.crime_rate, 
+                data.city2.crime_rate, 
+                data.crime_type, 
+                data.year,
+                isFutureComparison
+            );
+        }
+        
+        function updateComparisonChart(city1, city2, value1, value2, crimeType, year, isFuture) {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            
+            if (comparisonChart) {
+                comparisonChart.destroy();
+            }
+            
+            comparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [city1, city2],
+                    datasets: [{
+                        label: `Crime Rate Comparison (${crimeType})`,
+                        data: [value1, value2],
+                        backgroundColor: [
+                            isFuture ? 'rgba(234, 179, 8, 0.7)' : 'rgba(59, 130, 246, 0.7)',
+                            isFuture ? 'rgba(234, 179, 8, 0.7)' : 'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                            isFuture ? 'rgba(234, 179, 8, 1)' : 'rgba(59, 130, 246, 1)',
+                            isFuture ? 'rgba(234, 179, 8, 1)' : 'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Crime Rate (%)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Crime Rate Comparison (${year}): ${crimeType}`,
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    if (isFuture) {
+                                        return 'Projected value based on historical trends';
+                                    }
+                                    return 'Based on historical data';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

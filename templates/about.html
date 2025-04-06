@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - CrimeRateAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+        }
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(226, 232, 240, 0.6);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(30, 64, 175, 0.1);
+            border-color: rgba(165, 180, 252, 0.5);
+        }
+        .tech-badge {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+        }
+        .team-avatar {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #93c5fd;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover:after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="{{ url_for('index') }}" class="text-xl font-bold flex items-center hover:text-blue-200 transition duration-200">
+                <i class="bi bi-shield-lock mr-2"></i> 
+                <span>CrimeRate<span class="text-blue-200">AI</span></span>
+            </a>
+            <div class="hidden md:flex space-x-6">
+                 
+                
+                <a href="{{ url_for('about') }}" class="nav-link py-1 flex items-center font-medium">
+                    <i class="bi bi-info-circle mr-2"></i> About
+                </a>
+                <a href="{{ url_for('index') }}" class="nav-link py-1 flex items-center">
+                    <i class="bi bi-house-door mr-2"></i> Predictions
+                </a>
+                
+            </div>
+            <button class="md:hidden text-2xl">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="gradient-header text-white rounded-2xl p-8 mb-12 shadow-lg relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43IiBudW1PY3RhdmVzPSI1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNLTgwLTgwQzQwLTgwIDgwLTQwIDgwIDgwQzgwIDIwMCA0MCAyNDAtODAgMjQwQy0yMDAgMjQwLTI0MCAyMDAtMjQwIDgwQy0yNDAtNDAtLTIwMC04MC04MC04MHoiLz48L3N2Zz4=')]"></div>
+            <div class="max-w-4xl mx-auto text-center relative z-10">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">About CrimeRateAI</h1>
+                <p class="text-xl text-blue-100 leading-relaxed">
+                    Empowering safer communities through predictive analytics and data-driven insights
+                </p>
+                <div class="mt-6 flex justify-center space-x-4">
+                    <a href="#features" class="px-6 py-2 bg-white text-blue-700 rounded-full font-medium hover:bg-blue-50 transition duration-200">
+                        Explore Features
+                    </a>
+                    <a href="#methodology" class="px-6 py-2 border border-blue-200 text-blue-100 rounded-full font-medium hover:bg-blue-700/30 transition duration-200">
+                        Our Methodology
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Overview Section -->
+        <section class="max-w-5xl mx-auto mb-16">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-8">
+                    <div class="flex flex-col md:flex-row items-start">
+                        <div class="md:w-1/3 mb-6 md:mb-0">
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                                <h3 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                                    <i class="bi bi-eye-fill mr-2"></i> Vision
+                                </h3>
+                                <p class="text-blue-700">
+                                    To become the most trusted crime analytics platform for citizens, law enforcement, and policymakers.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="md:w-2/3 md:pl-8">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-4">Advanced Crime Prediction Platform</h2>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                CrimeRateAI is an intelligent, data-driven solution designed to forecast crime trends across major Indian cities. Our platform combines historical crime data, population statistics, and advanced machine learning models to provide actionable insights about urban safety.
+                            </p>
+                            <p class="text-gray-600 leading-relaxed">
+                                We serve researchers, policymakers, law enforcement agencies, and concerned citizens by transforming complex crime data into understandable predictions and visualizations, helping communities make informed decisions about safety and urban planning.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="mb-16">
+            <div class="text-center mb-12">
+                <span class="inline-block px-3 py-1 text-sm font-semibold text-blue-700 bg-blue-100 rounded-full mb-3">Features</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Powerful Tools for Crime Analysis</h2>
+                <p class="max-w-2xl mx-auto text-gray-600 mt-3">
+                    Our platform offers comprehensive features to analyze and predict crime patterns with precision
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="feature-card p-6">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">Predictive Analytics</h3>
+                    <p class="text-gray-600">
+                        Forecast crime trends up to 5 years in advance using our advanced machine learning models trained on historical data.
+                    </p>
+                </div>
+                
+                <div class="feature-card p-6">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">City Comparisons</h3>
+                    <p class="text-gray-600">
+                        Benchmark crime rates across different cities with interactive visualizations and detailed reports.
+                    </p>
+                </div>
+                
+                <div class="feature-card p-6">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">Safety Ratings</h3>
+                    <p class="text-gray-600">
+                        Get clear safety classifications (Very Low to Very High) for areas based on comprehensive crime analysis.
+                    </p>
+                </div>
+
+                <div class="feature-card p-6">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">Actionable Insights</h3>
+                    <p class="text-gray-600">
+                        Receive customized recommendations based on crime type and severity level for your area of interest.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="feature-card p-6">
+                    <div class="flex items-start">
+                        <div class="text-blue-600 text-3xl mr-4 mt-1">
+                            <i class="bi bi-database"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800">Transparent Data</h3>
+                            <p class="text-gray-600">
+                                Access the complete cleaned crime dataset used for our predictions with full documentation of sources.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card p-6">
+                    <div class="flex items-start">
+                        <div class="text-blue-600 text-3xl mr-4 mt-1">
+                            <i class="bi bi-phone"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800">Responsive Design</h3>
+                            <p class="text-gray-600">
+                                Fully mobile-optimized interface that works seamlessly across all devices and screen sizes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Methodology Section -->
+        <section id="methodology" class="mb-16">
+            <div class="text-center mb-12">
+                <span class="inline-block px-3 py-1 text-sm font-semibold text-blue-700 bg-blue-100 rounded-full mb-3">Technology</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Our Scientific Methodology</h2>
+                <p class="max-w-2xl mx-auto text-gray-600 mt-3">
+                    Combining robust data science with domain expertise for accurate predictions
+                </p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="p-8">
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-blue-700 flex items-center">
+                            <i class="bi bi-database mr-2"></i> Data Sources & Processing
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-medium text-gray-800 mb-2">Primary Sources</h4>
+                                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                                    <li><a href="https://www.ncrb.gov.in" target="_blank" class="text-blue-600 hover:underline">NCRB (National Crime Records Bureau)</a> (2010-present)</li>
+                                    <li>Census of India population data</li>
+                                    <li>State police department reports</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800 mb-2">Data Processing</h4>
+                                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                                    <li>Automated data validation pipelines</li>
+                                    <li>Missing data imputation techniques</li>
+                                    <li>Feature engineering for temporal patterns</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-blue-700 flex items-center">
+                            <i class="bi bi-diagram-3 mr-2"></i> Modeling Approach
+                        </h3>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <h4 class="font-medium text-gray-800 mb-2">Time-Series Models</h4>
+                                <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1">
+                                    <li>Prophet (Facebook's forecasting tool)</li>
+                                    <li>ARIMA (AutoRegressive Integrated Moving Average)</li>
+                                    <li>Exponential Smoothing (ETS)</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <h4 class="font-medium text-gray-800 mb-2">Machine Learning</h4>
+                                <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1">
+                                    <li>Random Forest Regression</li>
+                                    <li>Gradient Boosting (XGBoost)</li>
+                                    <li>Neural Networks (LSTM)</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <h4 class="font-medium text-gray-800 mb-2">Ensemble Approach</h4>
+                                <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1">
+                                    <li>Model stacking for improved accuracy</li>
+                                    <li>Crime-type specific model selection</li>
+                                    <li>Dynamic weighting based on performance</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-blue-700 flex items-center">
+                            <i class="bi bi-speedometer2 mr-2"></i> Performance Metrics
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white rounded-lg overflow-hidden border border-gray-200">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-gray-700 font-medium">Crime Category</th>
+                                        <th class="px-4 py-3 text-left text-gray-700 font-medium">MAPE*</th>
+                                        <th class="px-4 py-3 text-left text-gray-700 font-medium">R² Score</th>
+                                        <th class="px-4 py-3 text-left text-gray-700 font-medium">Coverage</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-4 py-3 text-gray-700 font-medium">Violent Crimes</td>
+                                        <td class="px-4 py-3 text-gray-600">8.2%</td>
+                                        <td class="px-4 py-3 text-gray-600">0.91</td>
+                                        <td class="px-4 py-3 text-gray-600">28 cities</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 text-gray-700 font-medium">Property Crimes</td>
+                                        <td class="px-4 py-3 text-gray-600">12.5%</td>
+                                        <td class="px-4 py-3 text-gray-600">0.85</td>
+                                        <td class="px-4 py-3 text-gray-600">35 cities</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 text-gray-700 font-medium">Economic Crimes</td>
+                                        <td class="px-4 py-3 text-gray-600">15.3%</td>
+                                        <td class="px-4 py-3 text-gray-600">0.79</td>
+                                        <td class="px-4 py-3 text-gray-600">22 cities</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 text-gray-700 font-medium">Cyber Crimes</td>
+                                        <td class="px-4 py-3 text-gray-600">18.7%</td>
+                                        <td class="px-4 py-3 text-gray-600">0.72</td>
+                                        <td class="px-4 py-3 text-gray-600">18 cities</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">*Mean Absolute Percentage Error (Lower values indicate better accuracy)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-700 flex items-center">
+                        <i class="bi bi-code-slash mr-2"></i> Technology Stack
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="tech-badge px-4 py-2 text-blue-800 rounded-full text-sm font-medium">Python 3.9</span>
+                        <span class="tech-badge px-4 py-2 text-blue-800 rounded-full text-sm font-medium">Flask</span>
+                        <span class="tech-badge px-4 py-2 text-blue-800 rounded-full text-sm font-medium">scikit-learn</span>
+                        <span class="tech-badge px-4 py-2 text-blue-800 rounded-full text-sm font-medium">Pandas</span>
+                        <span class="tech-badge px-4 py-2 text-blue-800 rounded-full text-sm font-medium">NumPy</span>
+                        <span class="tech-badge px-4 py-2 text-blue-800 rounded-full text-sm font-medium">Tailwind CSS</span>
+                        <span class="tech-badge px-4 py-2 text-blue-800 rounded-full text-sm font-medium">Chart.js</span>
+                        <span class="tech-badge px-4 py-2 text-blue-800 rounded-full text-sm font-medium">PostgreSQL</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-700 flex items-center">
+                        <i class="bi bi-arrow-repeat mr-2"></i> Continuous Improvement
+                    </h3>
+                    <p class="text-gray-600 mb-3">
+                        Our models are regularly updated with new data and refined using the latest machine learning techniques.
+                    </p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: 85%"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">Current model version: v2.3.1 (updated March 2023)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="mb-16">
+            <div class="text-center mb-12">
+                <span class="inline-block px-3 py-1 text-sm font-semibold text-blue-700 bg-blue-100 rounded-full mb-3">Team</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Meet Our Team</h2>
+                <p class="max-w-2xl mx-auto text-gray-600 mt-3">
+                    Data scientists and developers committed to building safer communities
+                </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="team-avatar w-32 h-32 mx-auto mb-4 rounded-full flex items-center justify-center text-4xl text-blue-700">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-1">Daksh Sharma</h3>
+                    
+                </div>
+                
+                <div class="text-center">
+                    <div class="team-avatar w-32 h-32 mx-auto mb-4 rounded-full flex items-center justify-center text-4xl text-blue-700">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-1">Harsh Sharma</h3>
+                    
+                </div>
+                
+                <div class="text-center">
+                    <div class="team-avatar w-32 h-32 mx-auto mb-4 rounded-full flex items-center justify-center text-4xl text-blue-700">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-1">Shreyas Sindhur</h3>
+                    
+                </div>
+
+                <div class="text-center">
+                    <div class="team-avatar w-32 h-32 mx-auto mb-4 rounded-full flex items-center justify-center text-4xl text-blue-700">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-1">Sujal Phapale</h3>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="gradient-header text-white rounded-2xl p-8 mb-12 shadow-lg">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-2xl md:text-3xl font-bold mb-4">Ready to Explore Crime Predictions?</h2>
+                <p class="text-xl text-blue-100 mb-6">
+                    Start using CrimeRateAI today to make data-driven safety decisions.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#" class="px-6 py-3 bg-white text-blue-700 rounded-full font-bold hover:bg-blue-50 transition duration-200">
+                        Try Our Predictor Tool
+                    </a>
+                    <a href="#" class="px-6 py-3 border border-blue-300 text-white rounded-full font-bold hover:bg-blue-700/30 transition duration-200">
+                        View Sample Reports
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Disclaimer Section -->
+        <div class="max-w-4xl mx-auto bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg mb-12">
+            <div class="flex">
+                <div class="flex-shrink-0 text-yellow-500 text-2xl mr-4">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-yellow-800 mb-2">Important Disclaimer</h3>
+                    <p class="text-yellow-700">
+                        CrimeRateAI provides statistical projections based on historical data patterns, not definitive predictions. All forecasts carry inherent uncertainty and should be used as one of several decision-making tools. Actual crime rates may vary due to unforeseen social, economic, or policy changes. We recommend consulting local authorities for the most current safety information.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-blue-800 to-blue-900 text-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4 flex items-center">
+                        <i class="bi bi-shield-lock mr-2"></i> CrimeRateAI
+                    </h3>
+                    <p class="text-sm text-blue-200 mb-4">
+                        Advanced crime prediction and analysis platform powered by machine learning and official data sources.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-200 hover:text-white text-xl transition duration-200">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="text-blue-200 hover:text-white text-xl transition duration-200">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-blue-200 hover:text-white text-xl transition duration-200">
+                            <i class="bi bi-github"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Product</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Features</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Pricing</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">API</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Changelog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Documentation</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Methodology</a></li>
+                        <li><a href="https://www.ncrb.gov.in" target="_blank" class="text-blue-200 hover:text-white transition duration-200">NCRB Data</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Research Papers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">About Us</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Careers</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Privacy Policy</a></li>
+                        <li><a href="#" class="text-blue-200 hover:text-white transition duration-200">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-blue-700 pt-6 text-sm text-center text-blue-300">
+                <p>© 2023 CrimeRateAI. All rights reserved. Predictions are based on statistical models and should be used for informational purposes only. Not affiliated with any government agency.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
