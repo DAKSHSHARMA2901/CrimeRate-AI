@@ -64,7 +64,7 @@ Clone the repository:
 bash
 Copy
 Edit
-git clone https://github.com/your-username/CrimeRate-AI.git
+git clone https://github.com/dakshsharma2901/CrimeRate-AI.git
 cd CrimeRate-AI
 Create a virtual environment:
 
