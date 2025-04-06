@@ -26,6 +26,23 @@ header {
     opacity: 0.9;
 }
 
+#mobileMenu {
+    transition: all 0.3s ease;
+    transform-origin: top;
+}
+
+#mobileMenu.hidden {
+    opacity: 0;
+    transform: scaleY(0);
+    display: none;
+}
+
+#mobileMenu:not(.hidden) {
+    opacity: 1;
+    transform: scaleY(1);
+    display: block;
+}
+
 /* Section Styling */
 .section1 {
     padding: 50px 20px;
